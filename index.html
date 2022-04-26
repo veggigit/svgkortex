@@ -12,29 +12,18 @@
         <input type="file" name="upload" id="upload">
         <button id="btnsubmit" type="submit">subir</button>
     </form>
+    <div id="wrap"></div>
+
+    <script src="./proce.js"></script>
     <script>
+        const svg = new svgProce('wrap');
+        // FORM
         const form = document.getElementById('myform');
         const upload = document.getElementById('upload');
         const btnsubmit = document.getElementById('btnsubmit');
         const endpoint = 'upload.php';
-        const proce = function(file){
-            const wrap = document.getElementById('wrap');
-            let reader = new FileReader();
-            reader.readAsText(file);
-        
-            reader.onload = function() {
-           
-                wrap.innerHTML = reader.result;
-                var path = document.getElementsByTagName('path');
-                console.log(path[0].getAttribute("d"));
-            };
-        
-            reader.onerror = function() {
-              console.log(reader.error);
-            };
-        }
 
-        form.addEventListener('submit',  e =>{
+        form.addEventListener('submit', e =>{
             e.preventDefault();
             const formdata = new FormData();
             formdata.append('upload', upload.files[0]);
@@ -44,11 +33,11 @@
                 body: formdata
             })
             .then(
-                proce(upload.files[0])
+                svg.svgRead(formdata.get('upload'))
             )
             .catch(console.error)
         });
     </script>
-    <div id="wrap"></div>
+    
 </body>
 </html>
