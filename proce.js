@@ -18,6 +18,7 @@ class svgProce {
             // var ellipses = document.getElementsByTagName('ellipse');
             // var lines = document.getElementsByTagName('line');
             // var polygons = document.getElementsByTagName('polygon');
+            this.svgPolygonHandle();
             this.svgRectsHandle();
             this.svgCirclesHandle();
             this.svgPathHandle();
@@ -30,7 +31,43 @@ class svgProce {
 
     svgPolygonHandle() {
         let polygonElements = document.getElementsByTagName('polygon');
-        // let getPerímetro = (w,h) => (2*w)+(2*h);
+        let getPerímetro = function polygon_length(el) {
+            var points = el.getAttribute('points');
+            points = points.split(' ');
+            if (points.length > 1) {
+              function coord(c_str) {
+                var c = c_str.split(',');
+                if (c.length != 2) {
+                  return; // return undefined
+                }
+                if (isNaN(c[0]) || isNaN(c[1])) {
+                  return;
+                }
+                return [parseFloat(c[0]), parseFloat(c[1])];
+              }
+          
+              function dist(c1, c2) {
+                if (c1 != undefined && c2 != undefined) {
+                  return Math.sqrt(Math.pow((c2[0]-c1[0]), 2) + Math.pow((c2[1]-c1[1]), 2));
+                } else {
+                  return 0;
+                }
+              }
+          
+              var len = 0;
+              // measure polygon
+              if (points.length > 2) {
+                for (var i=0; i<points.length-1; i++) {
+                  len += dist(coord(points[i]), coord(points[i+1]));
+                }
+              }
+              // measure line or measure polygon close line
+              len += dist(coord(points[0]), coord(points[points.length-1]));
+              return len;
+            } else {
+              return 0;
+            }
+          }
 
         if (polygonElements.length != 0) {
             // Obj
@@ -43,7 +80,7 @@ class svgProce {
             // Proce data
             let arrPolygons = Array.from(polygonElements);
             arrPolygons.map(function (e) {
-
+                console.log(getPerímetro(e));
             });
             // Expose data
             this.domResultados.appendChild(domPolygonSheet);
